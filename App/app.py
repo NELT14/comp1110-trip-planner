@@ -123,10 +123,11 @@ class Handler(BaseHTTPRequestHandler):
         try:
             if url.path == '/':
                 content, kind = (HERE / 'index.html').read_bytes(), 'text/html; charset=utf-8'
-            elif url.path in ('/planner.js', '/vendor/xlsx.full.min.js'):
+            elif url.path in ('/planner.js', '/estimates.js', '/survey.js', '/vendor/xlsx.full.min.js'):
                 content, kind = (HERE / url.path.lstrip('/')).read_bytes(), 'text/javascript'
-            elif url.path in ('/Data/travel_times_sample.xlsx', '/Data/restaurant_wait_times_sample.xlsx'):
-                content, kind = (DATA / Path(url.path).name).read_bytes(), 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            elif url.path in ('/Data/travel_times_sample.xlsx', '/Data/restaurant_wait_times_sample.xlsx', '/Data/Eateries%20and%20Uni%20locations.xlsx'):
+                from urllib.parse import unquote
+                content, kind = (DATA / unquote(Path(url.path).name)).read_bytes(), 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
             elif url.path == '/api/locations':
                 content = json.dumps({'locations': load_data()[1]}).encode()
                 kind = 'application/json'
